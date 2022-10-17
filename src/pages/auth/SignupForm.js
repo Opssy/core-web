@@ -7,7 +7,7 @@ import Footer from "./component/Footer";
 import "../../styles/signup.scss";
 import TypeOfProfileText from "./component/TypeOfProfileText";
 import axios from "axios";
-import { toast } from "react-toast";
+import { toast, ToastContainer } from "react-toast";
 
 function SignupForm() {
   const { formType } = useParams();
@@ -19,10 +19,13 @@ function SignupForm() {
   const [emailErrorMsg, setEmailErrorMsg] = useState("");
   const [passwordErrorMsg, setPasswordErrorMsg] = useState("");
   const [acceptErrorMsg, setAcceptErrorMsg] = useState("");
+  const [confirmPasswordErrorMsg, setConfirmPasswordErrorMsg] = useState("");
   const [errorStatus, setErrorStatus] = useState(false);
-  const [fullname, setFullname] = useState("");
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [type, setType] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const inputValidations = () => {
     let emailMessage = "Invalid email address";
@@ -31,7 +34,7 @@ function SignupForm() {
     const emailTest = re.test(email);
 
     //full_name input validation and error messages
-    if (fullname.length === 0) {
+    if (fullName.length === 0) {
       setErrorStatus(true);
       setNameErrorMsg("This field is required");
       return;
@@ -65,6 +68,25 @@ function SignupForm() {
       setPasswordErrorMsg("");
     }
 
+    if (confirmPassword.length === 0) {
+      setErrorStatus(true);
+      setConfirmPasswordErrorMsg("This field is required");
+    } else if (confirmPassword.length < 8) {
+      setErrorStatus(true);
+      setConfirmPasswordErrorMsg(passwordMessage);
+    } else {
+      setErrorStatus(false);
+      setConfirmPasswordErrorMsg("");
+    }
+
+    if (password !== confirmPassword) {
+      setErrorStatus(true);
+      setPasswordErrorMsg("Passwords don't match");
+    } else {
+      setErrorStatus(false);
+      setPasswordErrorMsg("");
+    }
+
     //acceptterms input validation and error messages
     if (acceptTerms === false) {
       setErrorStatus(true);
@@ -85,36 +107,38 @@ function SignupForm() {
 
   const submitForm = (event) => {
     event.preventDefault();
+
     inputValidations();
+
     if (errorStatus === true) {
-      // console.log(errorStatus);
       return errorStatus;
     } else {
-      console.log("form submitted:", fullname, email, password, acceptTerms);
-      const signupData = { fullname, email, password, acceptTerms };
-      const config = {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
+      const signupData = {
+        fullName,
+        email,
+        password,
+        confirmPassword,
+        acceptTerms,
+        formType
       };
+
       setLoading(true);
       axios
-        .post("http://localhost:3000/v1/register", signupData, config)
+        .post(process.env.REACT_APP_HOST_API + "register", signupData, {
+          xsrfHeaderName: "X-XSRF-TOKEN",
+          withCredentials: true
+        })
         .then((res) => {
-          if (res.success) {
-            toast.success("registered successfully");
-            // navigate("/verify");
+          if (res.data.response) {
+            // toast.success("registered successfully");
+            navigate("/verify");
           } else {
-            toast.error(res.error);
+            toast.error("Internal server error. Please try again");
           }
+          setLoading(false);
         })
         .catch((error) => {
-          console.log("error:", error);
           toast.error("Internal server error. Please try again");
-        })
-        .then(() => {
-          setLoading(false);
-          navigate(`/signup-form/${formType}`);
         });
     }
   };
@@ -148,7 +172,7 @@ function SignupForm() {
                   <TypeOfProfileText formType={formType} />
                 </div>
                 <div className="formik__wrap">
-                  <div className="formik__wrap-fullname">
+                  <div className="formik__wrap-name">
                     <label>Full Name</label>
                     <div className="formik__wrap-box">
                       <div className="formik__wrap-box-input">
@@ -171,13 +195,13 @@ function SignupForm() {
                           type="text"
                           placeholder="John"
                           name="fullName"
-                          value={fullname}
+                          value={fullName}
                           onChange={(e) => {
                             const nameValue = e.target.value.replace(
                               /[0-9]/g,
                               ""
                             );
-                            setFullname(nameValue);
+                            setFullName(nameValue);
                           }}
                         />
                       </div>
@@ -267,6 +291,35 @@ function SignupForm() {
                       )}
                     </div>
                   </div>
+                  <div className="formik__wrap-password">
+                    <label>Confirm Password</label>
+                    <div className="formik__wrap-password-box">
+                      <div className="formik__wrap-password-input">
+                        <Input.Password
+                          placeholder="Confirm password"
+                          iconRender={(visible) =>
+                            visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+                          }
+                          name="confirm_password"
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                        />
+                      </div>
+                      {confirmPasswordErrorMsg &&
+                      confirmPasswordErrorMsg.length > 0 ? (
+                        <span
+                          style={{
+                            color: "red",
+                            fontSize: "12px",
+                          }}
+                        >
+                          {confirmPasswordErrorMsg}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </div>
                   <div className="formik__wrap-check">
                     <Checkbox
                       onChange={(e) => setAcceptTerms(e.target.checked)}
@@ -294,6 +347,7 @@ function SignupForm() {
                     <button onClick={submitForm} className="button">
                       Get Started
                     </button>
+                    <ToastContainer />
                   </div>
                 </div>
               </form>
@@ -517,14 +571,6 @@ function SignupForm() {
                       </defs>
                     </svg>
                   </Link>
-                </div>
-                <div className="bottom">
-                  <p>
-                    Already have an account?{" "}
-                    <Link to="/login" className="sign">
-                      Sign in
-                    </Link>
-                  </p>
                 </div>
               </div>
             </div>

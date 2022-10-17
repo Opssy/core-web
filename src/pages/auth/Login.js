@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, createContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Input } from "antd";
 import { EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
@@ -7,27 +7,18 @@ import Footer from "./component/Footer";
 import Logo from "../../assets/footer-logo.png";
 import "../../styles/login.scss";
 import axios from "axios";
-import { toast } from "react-toast";
+import { toast, ToastContainer } from "react-toast";
+import { ProfileProvider } from "./ProfileContextApi";
 function Login() {
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
+  const [user, setUser] = useState({});
   const [password, setPassword] = useState("");
   const [emailErrorMsg, setEmailErrorMsg] = useState("");
   const [passwordErrorMsg, setPasswordErrorMsg] = useState("");
   const [errorStatus, setErrorStatus] = useState(false);
-
-  // const [values, setValues] = useState({
-  //   email: "",
-  //   password: "",
-  // });
-
-  // const { email, password } = values;
-
-  // const handleInputChange = (name) => (e) => {
-  //   setValues({ ...values, [name]: e.target.value });
-  // };
 
   const inputValidations = () => {
     let emailMessage = "Invalid email address";
@@ -57,43 +48,57 @@ function Login() {
     }
   };
 
+  const setAxiosAuthHeaders = (message) => {
+    axios.defaults.headers.common[
+      "Authorization"
+    ] = `${message.token_type} ${message.token}`;
+  };
+
+  const getTestData = () => {
+    axios.get(process.env.REACT_APP_HOST_API + "test")
+        .then((res) => {
+          console.log(res.data);
+        })
+  }
+
   const submitForm = (event) => {
     event.preventDefault();
     inputValidations();
     if (errorStatus === true) {
-      console.log(errorStatus);
       return errorStatus;
     } else {
-      console.log("login successful", email, password);
       const signinData = { email, password };
-      const config = {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      };
+      // const config = {
+      //   headers: {
+      //     "content-type": "multipart/form-data",
+      //   },
+      // };
       setLoading(true);
       axios
-        .post("http://localhost:3000/v1/logon", signinData, config)
+        .post(process.env.REACT_APP_HOST_API + "logon", signinData)
         .then((res) => {
-          if (res.success) {
-            toast.success("login successful");
+          if (res.data.response) {
+            setAxiosAuthHeaders(res.data.message);
+            // toast.success("registered successfully");
+            setUser(res.data.data );
+            console.log(user);
+            getTestData();
             navigate("/");
           } else {
-            toast.error(res.error);
+            toast.error("Internal server error. Please try again");
           }
+          setLoading(false);
         })
         .catch((error) => {
-          console.log("error:", error);
           toast.error("Internal server error. Please try again");
-        })
-        .then(() => {
-          setLoading(false);
         });
     }
   };
 
+  
   return (
     <Fragment>
+      <ProfileProvider user={user} />
       <div className="login">
         <Header />
         <div className="login__signupform">
@@ -193,6 +198,7 @@ function Login() {
                     <button onClick={submitForm} className="button">
                       Get Started
                     </button>
+                    <ToastContainer />
                   </div>
                 </div>
               </form>
@@ -420,7 +426,7 @@ function Login() {
                 <div className="bottom">
                   <p>
                     Don't have an account?{" "}
-                    <Link to="/" className="sign">
+                    <Link to="/signup" className="sign">
                       Sign up
                     </Link>
                   </p>
@@ -434,5 +440,17 @@ function Login() {
     </Fragment>
   );
 }
+
+// export const ProfileContext = createContext(null);
+
+// export const ProfileProvider = ({user, children}) => {
+//   console.log("usert", user);
+
+//   return (
+//     <ProfileContext.Provider value={user}>
+//       {children}
+//     </ProfileContext.Provider>
+//   );
+// }
 
 export default Login;

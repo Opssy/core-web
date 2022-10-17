@@ -1,11 +1,10 @@
 import React, { Fragment } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Header from "./component/Header";
 import Footer from "./component/Footer";
 import Logo from "../../assets/logo.png";
 import "../../styles/signup.scss";
 function Signup() {
-  const navigate = useNavigate();
   return (
     <Fragment>
       <div className="auth">
@@ -15,13 +14,15 @@ function Signup() {
             <img src={Logo} alt="logo" />
           </div>
           <div className="auth_container--description">
-            <h2>Join Kominiti</h2>
+            <div className="join">
+              Join Kominiti
+            </div>
             <p>What type of account will you be opening today?</p>
           </div>
           <div className="auth_container-wrapper">
             <div className="auth_container--option">
-              <div className="auth_container--option-top">
-                <div className="individual" onClick={() => navigate("/account-type")}>
+              <Link to="/account-type" className="auth_container--option-top">
+                <div className="individual">
                   <div className="individual-img">
                     <svg
                       width="27"
@@ -63,9 +64,9 @@ function Signup() {
                     </svg>
                   </div>
                 </div>
-              </div>
-              <div className="auth_container--option-bottom">
-                <div className="business" onClick={() => navigate("/business-form")}>
+              </Link>
+              <Link to="/business-form" className="auth_container--option-bottom">
+                <div className="business">
                   <div className="business-img">
                     <svg
                       width="34"
@@ -107,7 +108,7 @@ function Signup() {
                     </svg>
                   </div>
                 </div>
-              </div>
+              </Link>
             </div>
           </div>
         </div>

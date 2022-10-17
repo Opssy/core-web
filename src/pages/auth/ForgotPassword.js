@@ -40,28 +40,25 @@ function ForgotPassword() {
       return errorStatus;
     } else {
       console.log("Reset link sent.");
-      const config = {
-        headers: {
-          "content-type": "multipart/form-data",
-        },
-      };
+      // const config = {
+      //   headers: {
+      //     "content-type": "multipart/form-data",
+      //   },
+      // };
       setLoading(true);
       axios
-        .post("http://localhost:3000/v1/forgot")
+        .post(process.env.REACT_APP_HOST_API + "forgot", email)
         .then((res) => {
-          if (res.success) {
-            toast.success("login successful");
+          if (res.data.response) {
+            toast.success("Reset link sent");
             // navigate("/")
           } else {
-            toast.error(res.error);
+            toast.error("Internal server error. Please try again");
           }
+          setLoading(false);
         })
         .catch((error) => {
-          console.log("error:", error);
           toast.error("Internal server error. Please try again later");
-        })
-        .then(() => {
-          setLoading(false);
         });
     }
   };
@@ -70,6 +67,7 @@ function ForgotPassword() {
     <Fragment>
       <div className="login">
         <Header />
+        <div style={{ marginTop: '14%'}}>
         <div className="login__signupform">
           <div className="login__signupform-logo">
             <img src={Logo} alt="logo" />
@@ -147,6 +145,7 @@ function ForgotPassword() {
               </div>
             </div>
           </div>
+        </div>
         </div>
         <Footer />
       </div>

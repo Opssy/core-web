@@ -3,8 +3,9 @@ import Header from "./component/Header";
 import Footer from "./component/Footer";
 import Logo from "../../assets/logo.png";
 import "../../styles/accountype.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 function AccountType() {
+  const navigate = useNavigate();
   return (
     <Fragment>
       <div className="accountype">
@@ -20,7 +21,10 @@ function AccountType() {
           <div className="accountype_container-wrapper">
             <div className="accountype_container--option">
               <div className="accountype_container--option-top">
-                <Link to="/" className="accountype_container-link">
+                <div
+                  onClick={() => navigate("/signup")}
+                  className="accountype_container-link"
+                >
                   <div className="individual">
                     <div className="individual-img">
                       <svg
@@ -63,7 +67,7 @@ function AccountType() {
                       </svg>
                     </div>
                   </div>
-                </Link>
+                </div>
               </div>
               <Link
                 to="/signup-form/jobseeker"

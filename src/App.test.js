@@ -6,3 +6,8 @@ test('renders learn react link', () => {
   const linkElement = screen.getByText(/Join Kominiti/i);
   expect(linkElement).toBeInTheDocument();
 });
+
+// it('correctly renders override header level', () => {
+//   const  { getByRole } = render(<Heading overrideHeadingLevel="h2"/>)
+//   expect (getByRole('heading', {level: 2})).toBeInTheDocument()
+// });

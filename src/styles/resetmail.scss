@@ -98,3 +98,36 @@ body{
        }
    }
  }
+@media screen and(max-width:720px) {
+    .auth{
+        &__header{
+            &-top{
+                p {
+                    font-size: 12px;
+                }
+                .sign-in {
+                    font-size: 12px;
+                    padding: 6px 14px;
+                }
+            }
+        }
+        &_footer{
+            &--border{
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 30px 26px 0;
+                &---right{
+
+                }
+                &---left{
+                    flex-direction: column;       
+                    align-items: flex-start;
+                    gap: 10px;
+                    .span {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+}
