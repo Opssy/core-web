@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+* {
+	margin: 0;
+	padding: 0;
+	scroll-behavior: smooth;
+	box-sizing: border-box;
+    // background-color: #FAFAFA;
+}
+body{
+	font-family: "Poppins", sans-serif;
+    background-color: #FAFAFA;
+    position: relative;
+}
+.resetmail{
+   &__container{
+       margin-top: 10%;
+       display: flex;
+       justify-content: center;
+    &-box{
+        width: 750px;
+        height: 418px;
+        background: #FFFFFF;
+        border-radius: 5px;
+        &--save{
+            padding: 20px 40px;
+        }
+    }
+   }
+   &__header{
+       display: flex;
+       justify-content: center;
+       margin-top: 4%;
+   }
+   &-svg{
+       display: flex;
+       justify-content: center;
+       margin-top: 3%;
+   }
+   &-email{
+   h2{
+    font-family: 'Poppins';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #000000;
+    padding: 2% 0;
+    position: relative;
+    &::after{
+        position: absolute;
+    content: "";
+    height: 2px;
+    bottom: 8px;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    width: 7%;
+    background: #4895EF;
+    }
+   }
+   }
+   &-message{
+       p{
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+        display: flex;
+        align-items: center;
+        text-align: center;
+        color: #666666;
+       }
+   }
+   &-footer{
+       p{
+        font-family: 'Poppins';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 24px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: #666666;
+        padding: 2% 0;
+        .resend{
+            color: #4895EF;
+        }
+        .resends{
+            color: #4895EF;
+            text-decoration: none;
+        }
+       }
+   }
+ }
